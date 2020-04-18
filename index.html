@@ -8,6 +8,8 @@ Playground
 </title>
 <!-- EDIT -->
 <script src="./lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="./lib/gunzip.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="./lib/gzip.min.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="./lib/xterm/css/xterm.css" />
 <script type="text/javascript" src="./lib/xterm/lib/xterm.js"></script>
 <!-- END EDIT -->
@@ -135,8 +137,21 @@ onShare = function() {
     params = new URLSearchParams()
     
     var src = editor.getValue();
-    compressed = btoa(unescape(encodeURIComponent(src)))
-    params.set("s", compressed);
+    
+    compressed = new Zlib.Gzip(Array.from(new TextEncoder("utf-8").encode(src))).compress()
+    compressed = Array.from(compressed).map(b => String.fromCharCode(b)).join("");
+    compressed = btoa(compressed);
+    withoutCompression = btoa(unescape(encodeURIComponent(src)))
+
+
+    console.log("comp = " + compressed.length);
+    console.log("nocomp = " + withoutCompression.length);
+    if (compressed.length < withoutCompression.length) {
+        params.set("z", 1);
+        params.set("s", compressed);
+    } else {
+        params.set("s", withoutCompression);
+    }
     
     var shareText = document.getElementById("shareText");
     shareText.style.visibility = "visible";
@@ -200,8 +215,21 @@ initTerm = function  () {
 initProblem = function() {
     var params = (new URL(document.location)).searchParams;
     if (params.has('s')) {
-//        TemplateCode = decodeURI();
-        TemplateCode =decodeURIComponent( escape(window.atob(params.get('s'))) );
+        gzipped = false;
+        if (params.has('z')) {
+            gzipped = true;
+        }
+        if (gzipped) {
+            compressed = Uint8Array.from(Array.prototype.map.call(window.atob(params.get('s')), (x) => { 
+                return x.charCodeAt(0); 
+            }))
+
+            TemplateCode = new TextDecoder("utf-8").decode(new Zlib.Gunzip(compressed).decompress());
+
+            
+        } else {
+            TemplateCode = decodeURIComponent( escape(window.atob(params.get('s'))) );
+        }
     }
     
     if (typeof ProblemText !== 'undefined' && ProblemText) {
