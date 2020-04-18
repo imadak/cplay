@@ -135,7 +135,7 @@ checkAnswerInBatch = function(srcCode , inputPosition, inputArray, mark, callbac
     });
 }
 
-onShare = function() {
+onShare = function(reShare) {
     var editor = ace.edit("srcEditor");    
     var baseurl = document.location.href.split('?')[0];    
     params = new URLSearchParams()
@@ -155,6 +155,10 @@ onShare = function() {
         params.set("s", compressed);
     } else {
         params.set("s", withoutCompression);
+    }
+
+    if (reShare) {
+        params.set("r",1);
     }
     
     var shareText = document.getElementById("shareText");
@@ -183,9 +187,10 @@ initTerm = function  () {
     var term = new Terminal();
     MyTerm = term;
     term.open(document.getElementById('terminal'));
+    term.setOption("fontSize",14);
     var fitAddon = new FitAddon.FitAddon()
     term.loadAddon(fitAddon);
-    term.setOption("fontSize",14);
+
     fitAddon.fit();
 
     if (term._initialized) {
@@ -223,8 +228,14 @@ initTerm = function  () {
 
 initProblem = function() {
     var params = (new URL(document.location)).searchParams;
+
     if (params.has('s')) {
-        gzipped = false;
+        if (!params.has('r')) {
+            document.getElementById("shareButton").style.visibility = 'hidden';
+            document.getElementById("shareOnceButton").style.visibility = 'hidden';
+        }
+        
+        var gzipped = false;
         if (params.has('z')) {
             gzipped = true;
         }
@@ -239,6 +250,9 @@ initProblem = function() {
         } else {
             TemplateCode = decodeURIComponent( escape(window.atob(params.get('s'))) );
         }
+
+        
+
     }
     
     if (typeof ProblemText !== 'undefined' && ProblemText) {
@@ -301,7 +315,8 @@ runMain = function(srcCode, interactive, inputString, callback) {
 
   
   <button onclick="onReset();" id="resetButton"  type="submit">編集内容をリセット</button>
-  <button onclick="onShare();" id="shareButton" type="submit">共有</button>
+  <button onclick="onShare(true);" id="shareButton" type="submit">共有</button>
+  <button onclick="onShare(false);" id="shareOnceButton" type="submit">共有 (再共有禁止)</button>
   
   <div id="shareText" style="visibility:hidden;"><a></a>
   </div>
