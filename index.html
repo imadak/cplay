@@ -10,13 +10,17 @@ Playground
 <script src="./lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="./lib/gunzip.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="./lib/gzip.min.js" type="text/javascript" charset="utf-8"></script>
+
 <link rel="stylesheet" href="./lib/xterm/css/xterm.css" />
 <script type="text/javascript" src="./lib/xterm/lib/xterm.js"></script>
+<script src="./lib/xterm/lib/xterm-addon-fit.js" type="module" charset="utf-8"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit/lib/xterm-addon-fit.js" type="module" charset="utf-8"></script> -->
 <!-- END EDIT -->
 
 <script type="text/javascript">
+
 //<![CDATA[
-TemplateCode = ''  
+TemplateCode = ''
 <!--// place holder for the instance of terminal
 MyTerm = null;
 
@@ -172,13 +176,18 @@ initEditor = function() {
 }
 
 // initialize terminal (Xtermjs)
+
+
 initTerm = function  () {
 
     var term = new Terminal();
     MyTerm = term;
     term.open(document.getElementById('terminal'));
+    var fitAddon = new FitAddon.FitAddon()
+    term.loadAddon(fitAddon);
     term.setOption("fontSize",14);
-   
+    fitAddon.fit();
+
     if (term._initialized) {
         return;
     }
@@ -281,14 +290,14 @@ runMain = function(srcCode, interactive, inputString, callback) {
 <body onload="initProblem(); initEditor(); initTerm();" id="TheBody" >
 <!-- 開始 BEGIN EDIT-->
 <div>
-  <div id="problemText" style="width:80%; margin-bottom:3em"></div>
+  <div id="problemText" style="width:80%;margin-bottom:3em"></div>
 
   <button onclick="onExec();" id="execButton" type="submit">実行</button>
   <button onclick="onStop();" id="stopButton"  type="submit">停止</button>
   <button onclick="onAnswer();" id="ansButton"  type="submit">採点</button>
   <button onclick="onSubmit();" id="submitButton" type="submit" disabled="true">送信</button>
       
-  <div id="terminal" style="width:80%;  margin-bottom:1em" class="xterm"></div>
+  <div id="terminal" style="width:800px; height:16em; margin-bottom:1em" class="xterm"></div>
 
   
   <button onclick="onReset();" id="resetButton"  type="submit">編集内容をリセット</button>
