@@ -175,8 +175,15 @@ onShare = function(reShare) {
 
 onCopy = function() {
     var editor = ace.edit("srcEditor");
-    editor.selectAll();
-    document.execCommand('copy');
+
+    var copyFrom = document.createElement("textarea");
+    copyFrom.textContent = editor.getValue();
+    var bodyElm = document.getElementsByTagName("body")[0];
+    bodyElm.appendChild(copyFrom);
+    copyFrom.select();
+    var retVal = document.execCommand('copy');
+    bodyElm.removeChild(copyFrom);
+
     window.alert("ソースコードをクリップボードにコピーしました");
 }
  
