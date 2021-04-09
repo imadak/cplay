@@ -247,8 +247,8 @@ initProblem = function() {
 
     if (params.has('s')) {
         if (!params.has('r')) {
-            document.getElementById("shareButton").style.visibility = 'hidden';
-            document.getElementById("shareOnceButton").style.visibility = 'hidden';
+            document.getElementById("shareButton").style.display = 'none';
+            document.getElementById("shareOnceButton").style.display = 'none';
         }
         
         var gzipped = false;
