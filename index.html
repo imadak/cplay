@@ -173,13 +173,25 @@ onShare = function(reShare) {
     
 }
 
+onCopy = function() {
+    var editor = ace.edit("srcEditor");
+    editor.selectAll();
+    document.execCommand('copy');
+    // var copyTextarea = document.querySelector('#clipboard-content');
+    // console.log(copyTextarea);
+    // copyTextarea.value  = editor.getValue();
+    // copyTextarea.select();
+    // //console.log(copyTextarea.value);
+    
+    // copyTextarea.value = "";
+
+}
  
 // initialize text editor (Ace editor)
 initEditor = function() {
     var editor = ace.edit("srcEditor");
     editor.session.setMode("ace/mode/c_cpp");
     editor.setFontSize(16);
-
     editor.setValue(TemplateCode);
 }
 
@@ -321,6 +333,7 @@ runMain = function(srcCode, interactive, inputString, callback) {
   <button onclick="onReset();" id="resetButton"  type="submit">編集内容をリセット</button>
   <button onclick="onShare(true);" id="shareButton" type="submit">共有</button>
   <button onclick="onShare(false);" id="shareOnceButton" type="submit">共有 (再共有禁止)</button>
+  <button onclick="onCopy();" id="copyButton" type="submit">コピー</button>
   
   <div id="shareText" style="visibility:hidden;"><a></a>
   </div>
