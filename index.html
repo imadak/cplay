@@ -177,14 +177,7 @@ onCopy = function() {
     var editor = ace.edit("srcEditor");
     editor.selectAll();
     document.execCommand('copy');
-    // var copyTextarea = document.querySelector('#clipboard-content');
-    // console.log(copyTextarea);
-    // copyTextarea.value  = editor.getValue();
-    // copyTextarea.select();
-    // //console.log(copyTextarea.value);
-    
-    // copyTextarea.value = "";
-
+    window.alert("ソースコードをクリップボードにコピーしました");
 }
  
 // initialize text editor (Ace editor)
