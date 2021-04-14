@@ -186,7 +186,38 @@ onCopy = function() {
 
     window.alert("ソースコードをクリップボードにコピーしました");
 }
- 
+
+FileName = "filename.c"
+onSave = function() {
+    var editor = ace.edit("srcEditor");
+	var a = document.createElement("a");
+	a.href =  "data:text/plain," + encodeURIComponent(editor.getValue());
+    var result = window.prompt("ファイル名を入力してください", FileName);
+    if (result != null) {
+        FileName = result;
+        if (!FileName.match(/\.c$/)) {
+            FileName += ".c";
+        }
+        a.download = FileName;
+	    a.click();
+    }
+}
+onLoad = function() {
+    var reader = new FileReader();
+    reader.onload = function(event) {
+        var editor = ace.edit("srcEditor");
+        editor.setValue(event.target.result);
+    };
+
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".c, text/plain";
+    input.onchange =  function(event) {
+	    reader.readAsText(event.target.files[0]);
+    }
+    input.click();
+}
+
 // initialize text editor (Ace editor)
 initEditor = function() {
     var editor = ace.edit("srcEditor");
@@ -334,6 +365,8 @@ runMain = function(srcCode, interactive, inputString, callback) {
   <button onclick="onShare(true);" id="shareButton" type="submit">共有</button>
   <button onclick="onShare(false);" id="shareOnceButton" type="submit">共有 (再共有禁止)</button>
   <button onclick="onCopy();" id="copyButton" type="submit">コピー</button>
+  <button onclick="onSave();" id="saveButton" type="submit">保存</button>
+  <button onclick="onLoad();" id="loadButton" type="submit">読込</button>
   
   <div id="shareText" style="visibility:hidden;"><a></a>
   </div>
