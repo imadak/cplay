@@ -202,6 +202,7 @@ onSave = function() {
 	    a.click();
     }
 }
+
 onLoad = function() {
     var reader = new FileReader();
     reader.onload = function(event) {
@@ -213,6 +214,7 @@ onLoad = function() {
     input.type = "file";
     input.accept = ".c, text/plain";
     input.onchange =  function(event) {
+        FileName = event.target.files[0].name;
 	    reader.readAsText(event.target.files[0]);
     }
     input.click();
